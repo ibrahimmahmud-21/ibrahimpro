@@ -136,15 +136,16 @@
   .sheet-num b{ display:block; font-size:26px; color:var(--white); font-family:'Big Shoulders Display',sans-serif; }
 
   /* about spec table */
-  .spec-table{ border-top:1px solid var(--line-dim); }
+  .spec-table{ border-top:1px solid var(--line-dim); border-left:1px solid var(--line-dim); border-right:1px solid var(--line-dim); }
   .spec-row{
-    display:grid; grid-template-columns:220px 1fr;
+    display:grid; grid-template-columns:200px 1fr;
     border-bottom:1px solid var(--line-dim);
-    padding:20px 0;
-    gap:20px;
+    padding:20px 24px;
+    gap:24px;
+    align-items:start;
   }
-  .spec-row .k{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--line); }
-  .spec-row .v{ font-size:16.5px; color:rgba(244,249,253,.88); }
+  .spec-row .k{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--line); padding-top:3px; }
+  .spec-row .v{ font-size:16.5px; color:rgba(244,249,253,.88); text-align:left; }
 
   /* skills wiring diagram */
   .circuit{ position:relative; }
@@ -256,4 +257,6 @@
     .contact-left{ border-right:none; border-bottom:1px solid var(--line-dim); }
     .tb-grid{ grid-template-columns:1fr 1fr; }
     .tb-grid div:nth-child(3){ border-left:none; }
+    .spec-row{ grid-template-columns:130px 1fr; padding:18px 16px; gap:16px; }
+    .spec-row .v{ font-size:15px; }
   }
