@@ -257,4 +257,6 @@
     .contact-left{ border-right:none; border-bottom:1px solid var(--line-dim); }
     .tb-grid{ grid-template-columns:1fr 1fr; }
     .tb-grid div:nth-child(3){ border-left:none; }
+    .spec-row{ grid-template-columns:130px 1fr; padding:18px 16px; gap:16px; }
+    .spec-row .v{ font-size:15px; }
   }
