@@ -1,7 +1,11 @@
 <div class="grid-bg"></div>
 <div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>
 
-<header>
+<a href="#top" id="backToTop" class="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><polyline points="6 14 12 8 18 14"/></svg>
+</a>
+
+<header id="top">
   <div class="header-inner">
     <div class="brand">
       <div class="mark">IM</div>
@@ -13,6 +17,7 @@
     <nav id="navMenu">
       <a href="#about">About</a>
       <a href="#skills">Systems</a>
+      <a href="#learning">Learning</a>
       <a href="#projects">Build Log</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -35,11 +40,13 @@
           defenses — and I'm documenting the process one drawing at a time.</p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-solid">Build Log →</a>
+          <a href="/resume.pdf" download class="btn btn-outline">Download Resume</a>
           <a href="#contact" class="btn btn-outline">Request Contact</a>
         </div>
+        <p class="hero-email mono">x.ibrahimmahmud@gmail.com</p>
       </div>
       <div class="diagram">
-        <svg viewBox="0 0 300 300" fill="none" stroke="#7fb3dd" stroke-width="1.2">
+        <svg viewBox="0 0 300 300" fill="none" stroke="#7fb3dd" stroke-width="1.2" aria-hidden="true">
           <rect x="70" y="60" width="160" height="110" rx="2"/>
           <line x1="70" y1="90" x2="230" y2="90"/>
           <circle cx="150" cy="115" r="26" stroke="#ff7a3d"/>
@@ -69,6 +76,7 @@
       <div class="spec-row"><div class="k">Designation</div><div class="v">Ibrahim Mahmud</div></div>
       <div class="spec-row"><div class="k">Stage</div><div class="v">Class 10 Student<br>SSC 2027 Candidate</div></div>
       <div class="spec-row"><div class="k">Discipline</div><div class="v">Cybersecurity Enthusiast</div></div>
+      <div class="spec-row"><div class="k">Contact</div><div class="v"><a href="mailto:x.ibrahimmahmud@gmail.com" class="inline-link">x.ibrahimmahmud@gmail.com</a></div></div>
       <div class="spec-row"><div class="k">Method</div><div class="v">Learn by taking things apart — networks, code, and the odd puzzle — then rebuild them correctly</div></div>
       <div class="spec-row"><div class="k">Tolerance</div><div class="v">Comfortable with "beginner." Every rating on Sheet 03 started at zero.</div></div>
       <div class="spec-row"><div class="k">Status</div><div class="v">Active — revisions ongoing</div></div>
@@ -116,11 +124,34 @@
     </div>
   </section>
 
+  <section class="sheet reveal" id="learning">
+    <div class="sheet-head">
+      <h2>Currently Learning</h2>
+      <div class="sheet-num">Sheet<b>04</b></div>
+    </div>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <div class="learn-tag mono">MODULE 01</div>
+        <h3>Cyber Security</h3>
+        <p>Networks, defenses, offensive fundamentals — one lab at a time.</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-tag mono">MODULE 02</div>
+        <h3>AI</h3>
+        <p>Prompting, agents, and using models as leverage for real work.</p>
+      </div>
+      <div class="learn-card">
+        <div class="learn-tag mono">MODULE 03</div>
+        <h3>Programming</h3>
+        <p>Web fundamentals, scripting, and shipping small tools that solve problems.</p>
+      </div>
+    </div>
+  </section>
 
   <section class="sheet reveal" id="projects">
     <div class="sheet-head">
       <h2>Build Log</h2>
-      <div class="sheet-num">Sheet<b>04</b></div>
+      <div class="sheet-num">Sheet<b>05</b></div>
     </div>
     <div class="build-panel">
       <div class="build-top">
@@ -140,24 +171,58 @@
   <section class="sheet reveal" id="contact">
     <div class="sheet-head">
       <h2>Contact</h2>
-      <div class="sheet-num">Sheet<b>05</b></div>
+      <div class="sheet-num">Sheet<b>06</b></div>
     </div>
     <div class="contact-grid">
       <div class="contact-left">
         <h3>Request for Info</h3>
         <p>Questions, collaboration, or just want to talk cyber security — reach out below.</p>
-        <div class="contact-list">
-          <a href="#"><span>Email</span><span>→</span></a>
-          <a href="#"><span>Facebook</span><span>→</span></a>
-          <a href="#"><span>Telegram</span><span>→</span></a>
+        <div class="contact-cards">
+          <a class="contact-card" href="mailto:x.ibrahimmahmud@gmail.com">
+            <div class="cc-label mono">EMAIL</div>
+            <div class="cc-value">x.ibrahimmahmud@gmail.com</div>
+          </a>
+          <a class="contact-card" href="https://github.com/" target="_blank" rel="noopener">
+            <div class="cc-label mono">GITHUB</div>
+            <div class="cc-value">@placeholder →</div>
+          </a>
+          <a class="contact-card" href="https://linkedin.com/" target="_blank" rel="noopener">
+            <div class="cc-label mono">LINKEDIN</div>
+            <div class="cc-value">@placeholder →</div>
+          </a>
+          <a class="contact-card" href="https://facebook.com/" target="_blank" rel="noopener">
+            <div class="cc-label mono">FACEBOOK</div>
+            <div class="cc-value">@placeholder →</div>
+          </a>
         </div>
       </div>
       <div class="contact-right">
-        <form onsubmit="event.preventDefault(); this.querySelector('.submit-btn').textContent='Submitted ✓';">
-          <div class="field"><label>Name</label><input type="text" required></div>
-          <div class="field"><label>Email</label><input type="email" required></div>
-          <div class="field"><label>Message</label><textarea required></textarea></div>
-          <button class="submit-btn" type="submit">Submit Request</button>
+        <form id="contactForm" noValidate>
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input id="cf-name" name="name" type="text" required minlength="2" maxlength="100" autocomplete="name">
+            <div class="field-error" data-for="name"></div>
+          </div>
+          <div class="field">
+            <label for="cf-email">Email</label>
+            <input id="cf-email" name="email" type="email" required maxlength="200" autocomplete="email">
+            <div class="field-error" data-for="email"></div>
+          </div>
+          <div class="field">
+            <label for="cf-subject">Subject</label>
+            <input id="cf-subject" name="subject" type="text" required minlength="2" maxlength="150">
+            <div class="field-error" data-for="subject"></div>
+          </div>
+          <div class="field">
+            <label for="cf-message">Message</label>
+            <textarea id="cf-message" name="message" required minlength="10" maxlength="2000"></textarea>
+            <div class="field-error" data-for="message"></div>
+          </div>
+          <button class="submit-btn" type="submit">
+            <span class="btn-label">Submit Request</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
         </form>
       </div>
     </div>
@@ -166,7 +231,7 @@
   <div class="titleblock">
     <div class="tb-grid">
       <div>Drawn by<b>Ibrahim Mahmud</b></div>
-      <div>Sheet<b>01 – 05</b></div>
+      <div>Sheet<b>01 – 06</b></div>
       <div>Scale<b>N.T.S.</b></div>
       <div>Revision<b>03</b></div>
     </div>
