@@ -267,3 +267,75 @@
     .spec-row{ grid-template-columns:130px 1fr; padding:18px 16px; gap:16px; }
     .spec-row .v{ font-size:15px; }
   }
+
+  /* hero email tag */
+  .hero-email{ margin-top:22px; font-size:12px; color:var(--line); letter-spacing:.04em; }
+  .inline-link{ color:var(--orange); text-decoration:none; border-bottom:1px dashed var(--line-dim); }
+  .inline-link:hover{ border-bottom-color:var(--orange); }
+
+  /* currently learning */
+  .learn-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--line-dim); }
+  .learn-card{
+    padding:32px 28px; border-left:1px solid var(--line-dim);
+    opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease, background .2s;
+    position:relative;
+  }
+  .learn-card:first-child{ border-left:none; }
+  .learn-card.in-view{ opacity:1; transform:translateY(0); }
+  .learn-card:hover{ background:rgba(127,179,221,.05); }
+  .learn-tag{ font-size:10px; color:var(--line); letter-spacing:.14em; }
+  .learn-card h3{ font-size:24px; text-transform:uppercase; font-weight:700; margin-top:12px; }
+  .learn-card p{ color:rgba(244,249,253,.7); margin-top:10px; font-size:14.5px; }
+
+  /* contact cards */
+  .contact-cards{ margin-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line-dim); }
+  .contact-card{
+    padding:16px 18px; text-decoration:none; color:var(--white);
+    border-left:1px solid var(--line-dim); border-top:1px solid var(--line-dim);
+    transition:.15s; display:block;
+  }
+  .contact-card:nth-child(-n+2){ border-top:none; }
+  .contact-card:nth-child(odd){ border-left:none; }
+  .contact-card:hover{ background:rgba(127,179,221,.06); color:var(--orange); }
+  .cc-label{ font-size:9.5px; color:var(--line); letter-spacing:.14em; }
+  .cc-value{ font-family:'JetBrains Mono', monospace; font-size:12px; margin-top:6px; word-break:break-all; }
+
+  /* form status + spinner + errors */
+  .field-error{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#ff9a6b; margin-top:6px; min-height:1em; letter-spacing:.04em; }
+  .submit-btn{ position:relative; display:inline-flex; align-items:center; gap:10px; }
+  .submit-btn[disabled]{ opacity:.7; cursor:not-allowed; }
+  .btn-spinner{
+    width:12px; height:12px; border:1.5px solid var(--blue-deep); border-top-color:transparent;
+    border-radius:50%; display:none; animation:spin .7s linear infinite;
+  }
+  .submit-btn.loading .btn-spinner{ display:inline-block; }
+  .submit-btn.loading .btn-label::after{ content:"ing…"; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .form-status{
+    margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.03em;
+    padding:10px 12px; border:1px solid transparent; display:none;
+  }
+  .form-status.success{ display:block; border-color:var(--orange); color:var(--white); background:rgba(255,122,61,.08); }
+  .form-status.error{ display:block; border-color:#ff9a6b; color:#ff9a6b; background:rgba(255,154,107,.05); }
+
+  /* back to top */
+  .back-to-top{
+    position:fixed; bottom:22px; right:22px; z-index:70;
+    width:42px; height:42px; border:1px solid var(--line); background:var(--blue-deep);
+    color:var(--line); display:flex; align-items:center; justify-content:center;
+    text-decoration:none; opacity:0; pointer-events:none;
+    transform:translateY(8px); transition:opacity .3s ease, transform .3s ease, color .15s, border-color .15s;
+  }
+  .back-to-top.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
+  .back-to-top:hover{ color:var(--orange); border-color:var(--orange); }
+  .back-to-top svg{ width:18px; height:18px; }
+
+  @media(max-width:900px){
+    .learn-grid{ grid-template-columns:1fr; }
+    .learn-card{ border-left:none; border-top:1px solid var(--line-dim); }
+    .learn-card:first-child{ border-top:none; }
+    .contact-cards{ grid-template-columns:1fr; }
+    .contact-card{ border-left:none; border-top:1px solid var(--line-dim); }
+    .contact-card:first-child{ border-top:none; }
+    .back-to-top{ bottom:16px; right:16px; width:38px; height:38px; }
+  }
