@@ -257,8 +257,9 @@
     nav.open{ display:flex; }
     nav a{ border-left:none; border-top:1px solid var(--line-dim); padding:14px 24px; }
     .menu-btn{ display:block; }
-    .node{ grid-template-columns:24px 1fr; row-gap:10px; }
+    .node{ grid-template-columns:40px 1fr; row-gap:10px; gap:16px; }
     .node-level, .node-meter{ grid-column:2/3; }
+    .node::before{ left:19px; }
     .contact-grid{ grid-template-columns:1fr; }
     .contact-left{ border-right:none; border-bottom:1px solid var(--line-dim); }
     .tb-grid{ grid-template-columns:1fr 1fr; }
