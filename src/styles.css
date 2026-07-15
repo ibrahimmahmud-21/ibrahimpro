@@ -309,7 +309,8 @@
     border-radius:50%; display:none; animation:spin .7s linear infinite;
   }
   .submit-btn.loading .btn-spinner{ display:inline-block; }
-  .submit-btn.loading .btn-label::after{ content:"ing…"; }
+  .submit-btn.loading .btn-label{ visibility:hidden; position:relative; }
+  .submit-btn.loading .btn-label::before{ content:"Sending…"; visibility:visible; position:absolute; left:0; right:0; }
   @keyframes spin{ to{ transform:rotate(360deg); } }
   .form-status{
     margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.03em;
