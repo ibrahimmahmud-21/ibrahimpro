@@ -26,14 +26,24 @@ export default function App() {
       { threshold: 0.15 },
     );
     document
-      .querySelectorAll(".reveal, .node, .build-panel, .learn-card")
+      .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .stat-cell")
       .forEach((el) => io.observe(el));
 
-    // Back to top
+    // Footer year
+    const yearEl = document.getElementById("footerYear");
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    // Scroll progress + back to top
     const backBtn = document.getElementById("backToTop");
+    const progressBar = document.querySelector<HTMLElement>("#scrollProgress i");
     const onScroll = () => {
       if (window.scrollY > 400) backBtn?.classList.add("visible");
       else backBtn?.classList.remove("visible");
+      if (progressBar) {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+        progressBar.style.width = pct + "%";
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
