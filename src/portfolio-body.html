@@ -1,6 +1,8 @@
 <div class="grid-bg"></div>
 <div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>
 
+<div id="scrollProgress" class="scroll-progress" aria-hidden="true"><i></i></div>
+
 <a href="#top" id="backToTop" class="back-to-top" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><polyline points="6 14 12 8 18 14"/></svg>
 </a>
@@ -11,14 +13,15 @@
       <div class="mark">IM</div>
       <div>
         <div class="brand-name">Ibrahim Mahmud</div>
-        <div class="brand-sub">DRAWING SET — REV. 03</div>
+        <div class="brand-sub">DRAWING SET — REV. 04</div>
       </div>
     </div>
     <nav id="navMenu">
       <a href="#about">About</a>
       <a href="#skills">Systems</a>
       <a href="#learning">Learning</a>
-      <a href="#projects">Build Log</a>
+      <a href="#projects">Work</a>
+      <a href="#stats">Metrics</a>
       <a href="#contact">Contact</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
@@ -36,14 +39,18 @@
           <span class="outline">Mahmud</span>
         </h1>
         <p class="role">CLASS 10 STUDENT — CYBER SECURITY, IN DRAFT</p>
-        <p class="desc">Still early in the build. I study how systems are put together — networks, code,
-          defenses — and I'm documenting the process one drawing at a time.</p>
+        <p class="tagline">Studying how systems are built so I can learn to break, defend, and rebuild them — one sheet at a time.</p>
+        <p class="desc">Networks, code, and defenses documented as engineering drawings. Early in the build, honest about it, and shipping the process publicly.</p>
         <div class="hero-actions">
-          <a href="#projects" class="btn btn-solid">Build Log →</a>
+          <a href="#projects" class="btn btn-solid">View Work →</a>
           <a href="/resume.pdf" download class="btn btn-outline">Download Resume</a>
-          <a href="#contact" class="btn btn-outline">Request Contact</a>
+          <a href="#contact" class="btn btn-outline">Get In Touch</a>
         </div>
-        <p class="hero-email mono">x.ibrahimmahmud@gmail.com</p>
+        <div class="hero-meta">
+          <a href="mailto:x.ibrahimmahmud@gmail.com" class="hero-email mono">✉ x.ibrahimmahmud@gmail.com</a>
+          <span class="hero-dot" aria-hidden="true"></span>
+          <span class="hero-loc mono">TEKNAF · BD</span>
+        </div>
       </div>
       <div class="diagram">
         <svg viewBox="0 0 300 300" fill="none" stroke="#7fb3dd" stroke-width="1.2" aria-hidden="true">
@@ -79,7 +86,7 @@
       <div class="spec-row"><div class="k">Contact</div><div class="v"><a href="mailto:x.ibrahimmahmud@gmail.com" class="inline-link">x.ibrahimmahmud@gmail.com</a></div></div>
       <div class="spec-row"><div class="k">Method</div><div class="v">Learn by taking things apart — networks, code, and the odd puzzle — then rebuild them correctly</div></div>
       <div class="spec-row"><div class="k">Tolerance</div><div class="v">Comfortable with "beginner." Every rating on Sheet 03 started at zero.</div></div>
-      <div class="spec-row"><div class="k">Status</div><div class="v">Active — revisions ongoing</div></div>
+      <div class="spec-row"><div class="k">Status</div><div class="v"><span class="live-dot"></span>Active — revisions ongoing</div></div>
     </div>
   </section>
 
@@ -88,38 +95,57 @@
       <h2>Core Skills</h2>
       <div class="sheet-num">Sheet<b>03</b></div>
     </div>
-    <div class="circuit">
-      <div class="node-list">
-        <div class="node" style="--pct:60%">
+    <div class="skills-grid">
+      <div class="skill-card" style="--pct:60%">
+        <div class="skill-top">
           <div class="node-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter">
               <polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/><line x1="14" y1="5" x2="10" y2="19"/>
             </svg>
           </div>
-          <div class="node-name">Coding</div>
-          <div class="node-level">Intermediate</div>
-          <div class="node-meter"><i></i></div>
+          <div class="skill-idx mono">01</div>
         </div>
-        <div class="node" style="--pct:90%">
+        <div class="skill-name">Coding</div>
+        <div class="skill-desc">HTML, CSS, JavaScript. Small tools, clean structure, real projects.</div>
+        <div class="skill-meter-row">
+          <span class="skill-level mono">Intermediate</span>
+          <span class="skill-pct mono">60%</span>
+        </div>
+        <div class="node-meter"><i></i></div>
+      </div>
+      <div class="skill-card" style="--pct:90%">
+        <div class="skill-top">
           <div class="node-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter">
               <rect x="4" y="6" width="16" height="12" rx="1"/><line x1="8" y1="3" x2="8" y2="6"/><line x1="16" y1="3" x2="16" y2="6"/><circle cx="9.5" cy="12" r="1.2"/><circle cx="14.5" cy="12" r="1.2"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
             </svg>
           </div>
-          <div class="node-name">AI Productivity</div>
-          <div class="node-level">Advanced</div>
-          <div class="node-meter"><i></i></div>
+          <div class="skill-idx mono">02</div>
         </div>
-        <div class="node" style="--pct:35%">
+        <div class="skill-name">AI Productivity</div>
+        <div class="skill-desc">Prompting, agents, and using models as leverage for real work.</div>
+        <div class="skill-meter-row">
+          <span class="skill-level mono">Advanced</span>
+          <span class="skill-pct mono">90%</span>
+        </div>
+        <div class="node-meter"><i></i></div>
+      </div>
+      <div class="skill-card" style="--pct:35%">
+        <div class="skill-top">
           <div class="node-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" stroke-linejoin="miter">
               <path d="M12 3 L20 6 V12 C20 16.5 16.5 19.5 12 21 C7.5 19.5 4 16.5 4 12 V6 Z"/><path d="M9 12 l2.2 2.2 L15 10.4"/>
             </svg>
           </div>
-          <div class="node-name">Cyber Security</div>
-          <div class="node-level">Learning</div>
-          <div class="node-meter"><i></i></div>
+          <div class="skill-idx mono">03</div>
         </div>
+        <div class="skill-name">Cyber Security</div>
+        <div class="skill-desc">Networks, defenses, offensive fundamentals — one lab at a time.</div>
+        <div class="skill-meter-row">
+          <span class="skill-level mono">Learning</span>
+          <span class="skill-pct mono">35%</span>
+        </div>
+        <div class="node-meter"><i></i></div>
       </div>
     </div>
   </section>
@@ -150,20 +176,82 @@
 
   <section class="sheet reveal" id="projects">
     <div class="sheet-head">
-      <h2>Build Log</h2>
+      <h2>Featured Work</h2>
       <div class="sheet-num">Sheet<b>05</b></div>
     </div>
-    <div class="build-panel">
-      <div class="build-top">
+    <div class="projects-grid">
+      <article class="project-card">
+        <div class="project-head">
+          <span class="project-num mono">P.01</span>
+          <span class="status-chip">In Progress</span>
+        </div>
         <h3>Learning Dashboard</h3>
-        <div class="status-chip">In Progress</div>
+        <p>A personal tracker for what I learn — skills, hours, and small wins — so growth stays visible instead of scattered across notes.</p>
+        <div class="progress-track">
+          <div class="progress-label"><span>Build</span><span>38%</span></div>
+          <div class="progress-bar"><i style="--w:38%"></i></div>
+        </div>
+        <div class="tag-row">
+          <span class="tag mono">React</span>
+          <span class="tag mono">Design</span>
+        </div>
+      </article>
+      <article class="project-card">
+        <div class="project-head">
+          <span class="project-num mono">P.02</span>
+          <span class="status-chip planned">Planned</span>
+        </div>
+        <h3>Home Lab Notes</h3>
+        <p>Documenting a beginner cyber security home lab — nmap sweeps, small CTFs, and what the traffic actually looks like.</p>
+        <div class="progress-track">
+          <div class="progress-label"><span>Build</span><span>15%</span></div>
+          <div class="progress-bar"><i style="--w:15%"></i></div>
+        </div>
+        <div class="tag-row">
+          <span class="tag mono">Security</span>
+          <span class="tag mono">Notes</span>
+        </div>
+      </article>
+      <article class="project-card">
+        <div class="project-head">
+          <span class="project-num mono">P.03</span>
+          <span class="status-chip planned">Planned</span>
+        </div>
+        <h3>Prompt Toolkit</h3>
+        <p>A small library of reusable prompts and agent recipes I actually use for schoolwork, writing, and coding — shared openly.</p>
+        <div class="progress-track">
+          <div class="progress-label"><span>Build</span><span>10%</span></div>
+          <div class="progress-bar"><i style="--w:10%"></i></div>
+        </div>
+        <div class="tag-row">
+          <span class="tag mono">AI</span>
+          <span class="tag mono">Docs</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sheet reveal" id="stats">
+    <div class="sheet-head">
+      <h2>Metrics</h2>
+      <div class="sheet-num">Sheet<b>06</b></div>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-cell">
+        <div class="stat-num">2+</div>
+        <div class="stat-label mono">YEARS LEARNING</div>
       </div>
-      <p>A personal tracker for logging what I learn — skills, hours, and small wins — so growth
-        stays visible instead of scattered across notes.</p>
-      <div class="progress-track">
-        <div class="progress-label"><span>Build Progress</span><span>Est. 38%</span></div>
-        <div class="progress-bar"><i></i></div>
-        <div class="tick-row"><span>PLAN</span><span>STRUCTURE</span><span>BUILD</span><span>TEST</span><span>SHIP</span></div>
+      <div class="stat-cell">
+        <div class="stat-num">10+</div>
+        <div class="stat-label mono">TOOLS USED</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">3</div>
+        <div class="stat-label mono">FOCUS AREAS</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">2027</div>
+        <div class="stat-label mono">SSC CANDIDATE</div>
       </div>
     </div>
   </section>
@@ -171,17 +259,18 @@
   <section class="sheet reveal" id="contact">
     <div class="sheet-head">
       <h2>Contact</h2>
-      <div class="sheet-num">Sheet<b>06</b></div>
+      <div class="sheet-num">Sheet<b>07</b></div>
     </div>
     <div class="contact-grid">
       <div class="contact-left">
         <h3>Request for Info</h3>
-        <p>Questions, collaboration, or just want to talk cyber security — reach out below.</p>
+        <p>Questions, collaboration, or just want to talk cyber security — the fastest reply comes via email.</p>
+        <a class="contact-primary" href="mailto:x.ibrahimmahmud@gmail.com">
+          <span class="cp-label mono">DIRECT LINE</span>
+          <span class="cp-value">x.ibrahimmahmud@gmail.com</span>
+          <span class="cp-arrow" aria-hidden="true">→</span>
+        </a>
         <div class="contact-cards">
-          <a class="contact-card" href="mailto:x.ibrahimmahmud@gmail.com">
-            <div class="cc-label mono">EMAIL</div>
-            <div class="cc-value">x.ibrahimmahmud@gmail.com</div>
-          </a>
           <a class="contact-card" href="https://github.com/" target="_blank" rel="noopener">
             <div class="cc-label mono">GITHUB</div>
             <div class="cc-value">@placeholder →</div>
@@ -193,6 +282,10 @@
           <a class="contact-card" href="https://facebook.com/" target="_blank" rel="noopener">
             <div class="cc-label mono">FACEBOOK</div>
             <div class="cc-value">@placeholder →</div>
+          </a>
+          <a class="contact-card" href="/resume.pdf" download>
+            <div class="cc-label mono">RESUME</div>
+            <div class="cc-value">Download PDF →</div>
           </a>
         </div>
       </div>
@@ -231,9 +324,28 @@
   <div class="titleblock">
     <div class="tb-grid">
       <div>Drawn by<b>Ibrahim Mahmud</b></div>
-      <div>Sheet<b>01 – 06</b></div>
+      <div>Sheet<b>01 – 07</b></div>
       <div>Scale<b>N.T.S.</b></div>
-      <div>Revision<b>03</b></div>
+      <div>Revision<b>04</b></div>
     </div>
   </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="mark small">IM</div>
+        <div>
+          <div class="brand-name">Ibrahim Mahmud</div>
+          <div class="footer-tag mono">STUDENT · BUILDER · CYBER SECURITY IN DRAFT</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:x.ibrahimmahmud@gmail.com" class="mono">x.ibrahimmahmud@gmail.com</a>
+        <a href="#top" class="mono">Back to top ↑</a>
+      </div>
+    </div>
+    <div class="footer-bottom mono">
+      © <span id="footerYear">2026</span> Ibrahim Mahmud. Drawn by hand, deployed on the web.
+    </div>
+  </footer>
 </div>
