@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwvwvklr";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null);
