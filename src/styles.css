@@ -385,7 +385,10 @@
   }
   .contact-primary:hover{ background:rgba(255,122,61,.08); border-color:var(--orange); }
   .cp-label{ font-size:10px; color:var(--line); letter-spacing:.14em; }
-  .cp-value{ font-family:'JetBrains Mono', monospace; font-size:14px; word-break:break-all; }
+  .cp-value{ font-family:'JetBrains Mono', monospace; font-size:14px; display:inline-flex; align-items:center; gap:10px; min-width:0; }
+  .cp-icon{ width:18px; height:18px; color:var(--orange); flex-shrink:0; }
+  .cp-email{ word-break:break-all; min-width:0; }
+
   .cp-arrow{ color:var(--orange); font-size:20px; }
 
   /* contact cards */
