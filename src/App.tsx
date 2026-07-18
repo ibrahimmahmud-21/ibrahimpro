@@ -2,6 +2,20 @@ import { useEffect, useRef } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
+const THEME_KEY = "theme-preference";
+
+// Apply theme early to avoid flash
+(() => {
+  if (typeof document === "undefined") return;
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const theme = stored ?? (prefersDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  } catch {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+})();
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null);
@@ -15,6 +29,24 @@ export default function App() {
     const links = navMenu?.querySelectorAll("a") ?? [];
     const closeMenu = () => navMenu?.classList.remove("open");
     links.forEach((a) => a.addEventListener("click", closeMenu));
+
+    // Theme toggle
+    const themeBtn = document.getElementById("themeToggle");
+    const onTheme = () => {
+      const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem(THEME_KEY, next); } catch { /* ignore */ }
+    };
+    themeBtn?.addEventListener("click", onTheme);
+
+    // Respect system changes only if user hasn't chosen
+    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
+    const onSystem = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem(THEME_KEY)) return;
+      document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
+    };
+    mq?.addEventListener?.("change", onSystem);
 
     // Reveal on scroll
     const io = new IntersectionObserver(
@@ -112,6 +144,8 @@ export default function App() {
     return () => {
       menuBtn?.removeEventListener("click", onMenu);
       links.forEach((a) => a.removeEventListener("click", closeMenu));
+      themeBtn?.removeEventListener("click", onTheme);
+      mq?.removeEventListener?.("change", onSystem);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
