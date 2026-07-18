@@ -30,6 +30,24 @@ export default function App() {
     const closeMenu = () => navMenu?.classList.remove("open");
     links.forEach((a) => a.addEventListener("click", closeMenu));
 
+    // Theme toggle
+    const themeBtn = document.getElementById("themeToggle");
+    const onTheme = () => {
+      const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem(THEME_KEY, next); } catch { /* ignore */ }
+    };
+    themeBtn?.addEventListener("click", onTheme);
+
+    // Respect system changes only if user hasn't chosen
+    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
+    const onSystem = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem(THEME_KEY)) return;
+      document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
+    };
+    mq?.addEventListener?.("change", onSystem);
+
     // Reveal on scroll
     const io = new IntersectionObserver(
       (entries) => {
