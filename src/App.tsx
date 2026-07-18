@@ -2,6 +2,20 @@ import { useEffect, useRef } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
+const THEME_KEY = "theme-preference";
+
+// Apply theme early to avoid flash
+(() => {
+  if (typeof document === "undefined") return;
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const theme = stored ?? (prefersDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  } catch {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+})();
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null);
