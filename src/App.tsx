@@ -144,6 +144,8 @@ export default function App() {
     return () => {
       menuBtn?.removeEventListener("click", onMenu);
       links.forEach((a) => a.removeEventListener("click", closeMenu));
+      themeBtn?.removeEventListener("click", onTheme);
+      mq?.removeEventListener?.("change", onSystem);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
