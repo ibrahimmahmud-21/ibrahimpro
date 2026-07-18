@@ -212,6 +212,8 @@ section h2{ font-size:clamp(30px,4vw,46px); font-weight:700; letter-spacing:-.01
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .form-status{ margin-top:14px; font-size:13.5px; font-family:'IBM Plex Mono', monospace; }
 .form-status.success{ color:#1b7a3a; }
+:root[data-theme="dark"] .form-status.success{ color:#4ade80; }
+:root[data-theme="dark"] .email-card:hover{ background:var(--surface-dark-text); color:var(--surface-dark); border-color:var(--surface-dark-text); }
 .form-status.error{ color:var(--red); }
 
 footer{ padding:26px 0; border-top:3px solid var(--ink); }
