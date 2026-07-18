@@ -61,7 +61,7 @@ h1,h2,h3{ font-family:'Poppins', sans-serif; }
 /* header */
 header{
   position:sticky; top:0; z-index:50;
-  background:rgba(247,245,240,.92); backdrop-filter:blur(6px);
+  background:var(--header-bg); backdrop-filter:blur(6px);
   border-bottom:3px solid var(--ink);
 }
 .header-inner{
