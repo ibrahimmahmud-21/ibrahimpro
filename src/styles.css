@@ -6,6 +6,34 @@
   --blue:#1f5fb0;
   --yellow:#ffc907;
   --red:#e63328;
+  --muted:#666;
+  --muted-2:#4a4a4a;
+  --surface-dark:#151515;
+  --surface-dark-2:#232323;
+  --surface-dark-border:#3a3a3a;
+  --surface-dark-text:#f7f5f0;
+  --surface-dark-muted:#bdbdbd;
+  --surface-dark-label:#aaa;
+  --project-media-bg:#eceae4;
+  --header-bg:rgba(247,245,240,.92);
+}
+
+:root[data-theme="dark"]{
+  --paper:#14161a;
+  --ink:#ece9e0;
+  --blue:#4d8fe0;
+  --yellow:#ffd23a;
+  --red:#ff5a4d;
+  --muted:#8a8a8a;
+  --muted-2:#b3b3b3;
+  --surface-dark:#0c0d10;
+  --surface-dark-2:#1c1e23;
+  --surface-dark-border:#2b2e35;
+  --surface-dark-text:#ece9e0;
+  --surface-dark-muted:#a8a8a8;
+  --surface-dark-label:#888;
+  --project-media-bg:#1c1e23;
+  --header-bg:rgba(20,22,26,.92);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -17,6 +45,12 @@ body{
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  transition:background-color .35s ease, color .35s ease;
+}
+body, header, .btn, .fact-card, .learn-card, .project-card, .contact-grid,
+.field input, .field textarea, .skill-card, .skill-track, .skill-track i,
+.email-card, section, .theme-toggle{
+  transition:background-color .35s ease, color .35s ease, border-color .35s ease;
 }
 ::selection{ background:var(--ink); color:var(--paper); }
 h1,h2,h3{ font-family:'Poppins', sans-serif; }
