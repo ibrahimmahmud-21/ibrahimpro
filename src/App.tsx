@@ -83,6 +83,38 @@ export default function App() {
     // Contact form → Formspree
     const form = document.getElementById("contactForm") as HTMLFormElement | null;
     const status = document.getElementById("formStatus");
+    const captchaField = document.getElementById("captchaField");
+    const captchaQuestionEl = document.getElementById("captchaQuestion");
+    const messageEl = form?.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
+    const captchaInput = form?.querySelector<HTMLInputElement>('input[name="captcha_answer"]');
+
+    let captchaAnswer = 0;
+    const generateCaptcha = () => {
+      const a = Math.floor(Math.random() * 9) + 1;
+      const b = Math.floor(Math.random() * 9) + 1;
+      const op = Math.random() < 0.5 ? "+" : "×";
+      captchaAnswer = op === "+" ? a + b : a * b;
+      if (captchaQuestionEl) captchaQuestionEl.textContent = `what is ${a} ${op} ${b}?`;
+      if (captchaInput) captchaInput.value = "";
+    };
+    const revealCaptcha = () => {
+      if (!captchaField || captchaField.classList.contains("visible")) return;
+      generateCaptcha();
+      captchaField.classList.add("visible");
+      captchaField.setAttribute("aria-hidden", "false");
+    };
+    const onMessageInput = () => {
+      if ((messageEl?.value.trim().length ?? 0) >= 10) revealCaptcha();
+    };
+    messageEl?.addEventListener("input", onMessageInput);
+    const onFormFocusIn = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target?.getAttribute("name") === "captcha_answer") return;
+      // If user tabs toward submit, ensure captcha shown
+      if (target?.tagName === "BUTTON") revealCaptcha();
+    };
+    form?.addEventListener("focusin", onFormFocusIn);
+
     const clearErrors = () => {
       form?.querySelectorAll<HTMLElement>(".field-error").forEach((el) => (el.textContent = ""));
     };
@@ -103,6 +135,16 @@ export default function App() {
       const email = String(data.get("email") || "").trim();
       const subject = String(data.get("subject") || "").trim();
       const message = String(data.get("message") || "").trim();
+      const honeypot = String(data.get("website") || "").trim();
+      const captchaVal = String(data.get("captcha_answer") || "").trim();
+
+      // Honeypot — silently drop bot submissions
+      if (honeypot) {
+        form.reset();
+        status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+        status.classList.add("success");
+        return;
+      }
 
       let ok = true;
       if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
@@ -110,6 +152,14 @@ export default function App() {
       if (subject.length < 2) { setError("subject", "Add a short subject."); ok = false; }
       if (message.length < 10) { setError("message", "Message should be at least 10 characters."); ok = false; }
       if (!ok) return;
+
+      revealCaptcha();
+      if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
+        setError("captcha", "Please solve the quick check to continue.");
+        generateCaptcha();
+        return;
+      }
+
 
       const btn = form.querySelector<HTMLButtonElement>(".submit-btn");
       btn?.classList.add("loading");
@@ -149,6 +199,8 @@ export default function App() {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
+      messageEl?.removeEventListener("input", onMessageInput);
+      form?.removeEventListener("focusin", onFormFocusIn);
     };
   }, []);
 

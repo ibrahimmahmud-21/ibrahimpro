@@ -211,6 +211,13 @@ section h2{ font-size:clamp(30px,4vw,46px); font-weight:700; letter-spacing:-.01
 .submit-btn.loading .btn-spinner{ display:inline-block; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .form-status{ margin-top:14px; font-size:13.5px; font-family:'IBM Plex Mono', monospace; }
+.hp-field{ position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; }
+.captcha-field{
+  max-height:0; opacity:0; overflow:hidden; margin:0;
+  transform:translateY(-6px);
+  transition:max-height .4s ease, opacity .35s ease, transform .35s ease, margin .35s ease;
+}
+.captcha-field.visible{ max-height:160px; opacity:1; transform:translateY(0); margin-top:0; }
 .form-status.success{ color:#1b7a3a; }
 :root[data-theme="dark"] .form-status.success{ color:#4ade80; }
 :root[data-theme="dark"] .email-card:hover{ background:var(--surface-dark-text); color:var(--surface-dark); border-color:var(--surface-dark-text); }
