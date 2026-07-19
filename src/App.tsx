@@ -227,16 +227,16 @@ export default function App() {
         });
         if (res.ok) {
           form.reset();
-          status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+          status.textContent = t(currentLang, "status.success");
           status.classList.add("success");
         } else {
           const json = await res.json().catch(() => null);
-          const msg = json?.errors?.[0]?.message || "Submission failed. Please try again.";
+          const msg = json?.errors?.[0]?.message || t(currentLang, "status.fail");
           status.textContent = msg;
           status.classList.add("error");
         }
       } catch {
-        status.textContent = "Network error. Please check your connection and try again.";
+        status.textContent = t(currentLang, "status.network");
         status.classList.add("error");
       } finally {
         btn?.classList.remove("loading");
