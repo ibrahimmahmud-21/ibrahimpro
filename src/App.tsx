@@ -83,9 +83,38 @@ export default function App() {
     // Contact form → Formspree
     const form = document.getElementById("contactForm") as HTMLFormElement | null;
     const status = document.getElementById("formStatus");
-    const clearErrors = () => {
-      form?.querySelectorAll<HTMLElement>(".field-error").forEach((el) => (el.textContent = ""));
+    const captchaField = document.getElementById("captchaField");
+    const captchaQuestionEl = document.getElementById("captchaQuestion");
+    const messageEl = form?.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
+    const captchaInput = form?.querySelector<HTMLInputElement>('input[name="captcha_answer"]');
+
+    let captchaAnswer = 0;
+    const generateCaptcha = () => {
+      const a = Math.floor(Math.random() * 9) + 1;
+      const b = Math.floor(Math.random() * 9) + 1;
+      const op = Math.random() < 0.5 ? "+" : "×";
+      captchaAnswer = op === "+" ? a + b : a * b;
+      if (captchaQuestionEl) captchaQuestionEl.textContent = `what is ${a} ${op} ${b}?`;
+      if (captchaInput) captchaInput.value = "";
     };
+    const revealCaptcha = () => {
+      if (!captchaField || captchaField.classList.contains("visible")) return;
+      generateCaptcha();
+      captchaField.classList.add("visible");
+      captchaField.setAttribute("aria-hidden", "false");
+    };
+    const onMessageInput = () => {
+      if ((messageEl?.value.trim().length ?? 0) >= 10) revealCaptcha();
+    };
+    messageEl?.addEventListener("input", onMessageInput);
+    const onFormFocusIn = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target?.getAttribute("name") === "captcha_answer") return;
+      // If user tabs toward submit, ensure captcha shown
+      if (target?.tagName === "BUTTON") revealCaptcha();
+    };
+    form?.addEventListener("focusin", onFormFocusIn);
+
     const setError = (name: string, msg: string) => {
       const el = form?.querySelector<HTMLElement>(`.field-error[data-for="${name}"]`);
       if (el) el.textContent = msg;
