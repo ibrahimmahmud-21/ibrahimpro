@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
+import { applyTranslations, detectInitialLang, LANG_KEY, localizeNumber, t, type Lang } from "./i18n";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
 const THEME_KEY = "theme-preference";
