@@ -258,6 +258,7 @@ export default function App() {
       form?.removeEventListener("submit", onSubmit);
       messageEl?.removeEventListener("input", onMessageInput);
       form?.removeEventListener("focusin", onFormFocusIn);
+      langToggle?.removeEventListener("click", onLangClick);
     };
   }, []);
 
