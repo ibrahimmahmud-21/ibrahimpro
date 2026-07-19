@@ -142,7 +142,13 @@ export default function App() {
       const b = Math.floor(Math.random() * 9) + 1;
       const op = Math.random() < 0.5 ? "+" : "×";
       captchaAnswer = op === "+" ? a + b : a * b;
-      if (captchaQuestionEl) captchaQuestionEl.textContent = `what is ${a} ${op} ${b}?`;
+      if (captchaQuestionEl) {
+        captchaQuestionEl.textContent = t(currentLang, "form.captcha_question", {
+          a: localizeNumber(currentLang, a),
+          b: localizeNumber(currentLang, b),
+          op,
+        });
+      }
       if (captchaInput) captchaInput.value = "";
     };
     const revealCaptcha = () => {
