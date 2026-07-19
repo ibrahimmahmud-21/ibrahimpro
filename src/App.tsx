@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
+import { applyTranslations, detectInitialLang, LANG_KEY, localizeNumber, t, type Lang } from "./i18n";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
 const THEME_KEY = "theme-preference";
@@ -61,9 +62,56 @@ export default function App() {
       .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .stat-cell")
       .forEach((el) => io.observe(el));
 
-    // Footer year
+    // ---- i18n ----
+    let currentLang: Lang = detectInitialLang();
+    const rootEl = ref.current;
     const yearEl = document.getElementById("footerYear");
-    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    const footerRightsEl = document.getElementById("footerRights");
+    const langToggle = document.getElementById("langToggle");
+
+    const updateFooterYear = () => {
+      const year = new Date().getFullYear();
+      if (yearEl) yearEl.textContent = localizeNumber(currentLang, year);
+      if (footerRightsEl) {
+        footerRightsEl.textContent = t(currentLang, "footer.rights", {
+          year: localizeNumber(currentLang, year),
+        });
+      }
+    };
+    const updateLangToggle = () => {
+      langToggle?.querySelectorAll<HTMLElement>(".lang-opt").forEach((el) => {
+        el.classList.toggle("active", el.getAttribute("data-lang") === currentLang);
+      });
+    };
+    const applyLang = (lang: Lang, animate = false) => {
+      currentLang = lang;
+      const run = () => {
+        if (rootEl) applyTranslations(rootEl, lang);
+        updateFooterYear();
+        updateLangToggle();
+        // Re-render captcha in current language if visible
+        if (captchaField?.classList.contains("visible")) generateCaptcha();
+      };
+      if (animate && rootEl) {
+        rootEl.classList.add("lang-switching");
+        window.setTimeout(() => {
+          run();
+          window.setTimeout(() => rootEl.classList.remove("lang-switching"), 20);
+        }, 180);
+      } else {
+        run();
+      }
+    };
+    const onLangClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".lang-opt");
+      const picked = target?.getAttribute("data-lang") as Lang | null;
+      const next: Lang = picked ?? (currentLang === "en" ? "bn" : "en");
+      if (next === currentLang) return;
+      try { localStorage.setItem(LANG_KEY, next); } catch { /* ignore */ }
+      applyLang(next, true);
+    };
+    langToggle?.addEventListener("click", onLangClick);
+
 
     // Scroll progress + back to top
     const backBtn = document.getElementById("backToTop");
@@ -94,7 +142,13 @@ export default function App() {
       const b = Math.floor(Math.random() * 9) + 1;
       const op = Math.random() < 0.5 ? "+" : "×";
       captchaAnswer = op === "+" ? a + b : a * b;
-      if (captchaQuestionEl) captchaQuestionEl.textContent = `what is ${a} ${op} ${b}?`;
+      if (captchaQuestionEl) {
+        captchaQuestionEl.textContent = t(currentLang, "form.captcha_question", {
+          a: localizeNumber(currentLang, a),
+          b: localizeNumber(currentLang, b),
+          op,
+        });
+      }
       if (captchaInput) captchaInput.value = "";
     };
     const revealCaptcha = () => {
@@ -141,21 +195,21 @@ export default function App() {
       // Honeypot — silently drop bot submissions
       if (honeypot) {
         form.reset();
-        status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+        status.textContent = t(currentLang, "status.success");
         status.classList.add("success");
         return;
       }
 
       let ok = true;
-      if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", "Enter a valid email address."); ok = false; }
-      if (subject.length < 2) { setError("subject", "Add a short subject."); ok = false; }
-      if (message.length < 10) { setError("message", "Message should be at least 10 characters."); ok = false; }
+      if (name.length < 2) { setError("name", t(currentLang, "err.name")); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", t(currentLang, "err.email")); ok = false; }
+      if (subject.length < 2) { setError("subject", t(currentLang, "err.subject")); ok = false; }
+      if (message.length < 10) { setError("message", t(currentLang, "err.message")); ok = false; }
       if (!ok) return;
 
       revealCaptcha();
       if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
-        setError("captcha", "Please solve the quick check to continue.");
+        setError("captcha", t(currentLang, "err.captcha"));
         generateCaptcha();
         return;
       }
@@ -173,16 +227,16 @@ export default function App() {
         });
         if (res.ok) {
           form.reset();
-          status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+          status.textContent = t(currentLang, "status.success");
           status.classList.add("success");
         } else {
           const json = await res.json().catch(() => null);
-          const msg = json?.errors?.[0]?.message || "Submission failed. Please try again.";
+          const msg = json?.errors?.[0]?.message || t(currentLang, "status.fail");
           status.textContent = msg;
           status.classList.add("error");
         }
       } catch {
-        status.textContent = "Network error. Please check your connection and try again.";
+        status.textContent = t(currentLang, "status.network");
         status.classList.add("error");
       } finally {
         btn?.classList.remove("loading");
@@ -190,6 +244,9 @@ export default function App() {
       }
     };
     form?.addEventListener("submit", onSubmit);
+
+    // Initial i18n render
+    applyLang(currentLang, false);
 
     return () => {
       menuBtn?.removeEventListener("click", onMenu);
@@ -201,6 +258,7 @@ export default function App() {
       form?.removeEventListener("submit", onSubmit);
       messageEl?.removeEventListener("input", onMessageInput);
       form?.removeEventListener("focusin", onFormFocusIn);
+      langToggle?.removeEventListener("click", onLangClick);
     };
   }, []);
 
