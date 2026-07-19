@@ -245,6 +245,9 @@ export default function App() {
     };
     form?.addEventListener("submit", onSubmit);
 
+    // Initial i18n render
+    applyLang(currentLang, false);
+
     return () => {
       menuBtn?.removeEventListener("click", onMenu);
       links.forEach((a) => a.removeEventListener("click", closeMenu));
