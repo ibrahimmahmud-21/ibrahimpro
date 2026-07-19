@@ -98,6 +98,28 @@ nav a.active{ font-weight:700; }
 :root[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
 :root[data-theme="dark"] .theme-toggle .icon-moon{ display:inline-block; }
 
+/* language toggle */
+.lang-toggle{
+  display:inline-flex; align-items:center; gap:6px;
+  height:34px; padding:0 10px; margin-left:14px;
+  background:transparent; border:2px solid var(--ink); color:var(--ink);
+  cursor:pointer; font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:.02em; line-height:1;
+}
+.lang-toggle .lang-opt{ opacity:.55; transition:opacity .2s ease; }
+.lang-toggle .lang-opt.active{ opacity:1; }
+.lang-toggle .lang-sep{ opacity:.35; }
+.lang-toggle:hover .lang-opt{ opacity:.85; }
+.lang-toggle:hover .lang-opt.active{ opacity:1; }
+
+/* language switch fade */
+.lang-switching{ opacity:0; transition:opacity .18s ease; }
+[dir], body{ transition:opacity .18s ease; }
+
+@media (max-width: 720px){
+  .lang-toggle{ margin-left:8px; padding:0 8px; font-size:11px; }
+}
+
 section{ padding:90px 0; position:relative; }
 .sec-marker{ display:flex; align-items:center; gap:16px; margin-bottom:26px; }
 .shape-lg{ flex-shrink:0; }
