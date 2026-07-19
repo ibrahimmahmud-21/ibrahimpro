@@ -195,21 +195,21 @@ export default function App() {
       // Honeypot — silently drop bot submissions
       if (honeypot) {
         form.reset();
-        status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+        status.textContent = t(currentLang, "status.success");
         status.classList.add("success");
         return;
       }
 
       let ok = true;
-      if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", "Enter a valid email address."); ok = false; }
-      if (subject.length < 2) { setError("subject", "Add a short subject."); ok = false; }
-      if (message.length < 10) { setError("message", "Message should be at least 10 characters."); ok = false; }
+      if (name.length < 2) { setError("name", t(currentLang, "err.name")); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", t(currentLang, "err.email")); ok = false; }
+      if (subject.length < 2) { setError("subject", t(currentLang, "err.subject")); ok = false; }
+      if (message.length < 10) { setError("message", t(currentLang, "err.message")); ok = false; }
       if (!ok) return;
 
       revealCaptcha();
       if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
-        setError("captcha", "Please solve the quick check to continue.");
+        setError("captcha", t(currentLang, "err.captcha"));
         generateCaptcha();
         return;
       }
