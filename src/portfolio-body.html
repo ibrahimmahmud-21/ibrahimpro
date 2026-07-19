@@ -171,6 +171,15 @@
             <textarea id="cf-message" name="message" required minlength="10" maxlength="2000"></textarea>
             <div class="field-error" data-for="message"></div>
           </div>
+          <div class="hp-field" aria-hidden="true">
+            <label for="cf-website">Website</label>
+            <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="field captcha-field" id="captchaField" aria-hidden="true">
+            <label for="cf-captcha">Quick check: <span id="captchaQuestion">—</span></label>
+            <input id="cf-captcha" name="captcha_answer" type="text" inputmode="numeric" autocomplete="off">
+            <div class="field-error" data-for="captcha"></div>
+          </div>
           <button class="submit-btn" type="submit">
             <span class="btn-label">Send Message</span>
             <span class="btn-spinner" aria-hidden="true"></span>
