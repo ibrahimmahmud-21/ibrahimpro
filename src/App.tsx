@@ -115,6 +115,9 @@ export default function App() {
     };
     form?.addEventListener("focusin", onFormFocusIn);
 
+    const clearErrors = () => {
+      form?.querySelectorAll<HTMLElement>(".field-error").forEach((el) => (el.textContent = ""));
+    };
     const setError = (name: string, msg: string) => {
       const el = form?.querySelector<HTMLElement>(`.field-error[data-for="${name}"]`);
       if (el) el.textContent = msg;
@@ -132,6 +135,16 @@ export default function App() {
       const email = String(data.get("email") || "").trim();
       const subject = String(data.get("subject") || "").trim();
       const message = String(data.get("message") || "").trim();
+      const honeypot = String(data.get("website") || "").trim();
+      const captchaVal = String(data.get("captcha_answer") || "").trim();
+
+      // Honeypot — silently drop bot submissions
+      if (honeypot) {
+        form.reset();
+        status.textContent = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+        status.classList.add("success");
+        return;
+      }
 
       let ok = true;
       if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
@@ -139,6 +152,14 @@ export default function App() {
       if (subject.length < 2) { setError("subject", "Add a short subject."); ok = false; }
       if (message.length < 10) { setError("message", "Message should be at least 10 characters."); ok = false; }
       if (!ok) return;
+
+      revealCaptcha();
+      if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
+        setError("captcha", "Please solve the quick check to continue.");
+        generateCaptcha();
+        return;
+      }
+
 
       const btn = form.querySelector<HTMLButtonElement>(".submit-btn");
       btn?.classList.add("loading");
