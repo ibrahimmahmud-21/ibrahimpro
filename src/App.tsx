@@ -62,9 +62,56 @@ export default function App() {
       .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .stat-cell")
       .forEach((el) => io.observe(el));
 
-    // Footer year
+    // ---- i18n ----
+    let currentLang: Lang = detectInitialLang();
+    const rootEl = ref.current;
     const yearEl = document.getElementById("footerYear");
-    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    const footerRightsEl = document.getElementById("footerRights");
+    const langToggle = document.getElementById("langToggle");
+
+    const updateFooterYear = () => {
+      const year = new Date().getFullYear();
+      if (yearEl) yearEl.textContent = localizeNumber(currentLang, year);
+      if (footerRightsEl) {
+        footerRightsEl.textContent = t(currentLang, "footer.rights", {
+          year: localizeNumber(currentLang, year),
+        });
+      }
+    };
+    const updateLangToggle = () => {
+      langToggle?.querySelectorAll<HTMLElement>(".lang-opt").forEach((el) => {
+        el.classList.toggle("active", el.getAttribute("data-lang") === currentLang);
+      });
+    };
+    const applyLang = (lang: Lang, animate = false) => {
+      currentLang = lang;
+      const run = () => {
+        if (rootEl) applyTranslations(rootEl, lang);
+        updateFooterYear();
+        updateLangToggle();
+        // Re-render captcha in current language if visible
+        if (captchaField?.classList.contains("visible")) generateCaptcha();
+      };
+      if (animate && rootEl) {
+        rootEl.classList.add("lang-switching");
+        window.setTimeout(() => {
+          run();
+          window.setTimeout(() => rootEl.classList.remove("lang-switching"), 20);
+        }, 180);
+      } else {
+        run();
+      }
+    };
+    const onLangClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".lang-opt");
+      const picked = target?.getAttribute("data-lang") as Lang | null;
+      const next: Lang = picked ?? (currentLang === "en" ? "bn" : "en");
+      if (next === currentLang) return;
+      try { localStorage.setItem(LANG_KEY, next); } catch { /* ignore */ }
+      applyLang(next, true);
+    };
+    langToggle?.addEventListener("click", onLangClick);
+
 
     // Scroll progress + back to top
     const backBtn = document.getElementById("backToTop");
