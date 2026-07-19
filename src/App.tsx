@@ -199,6 +199,8 @@ export default function App() {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
+      messageEl?.removeEventListener("input", onMessageInput);
+      form?.removeEventListener("focusin", onFormFocusIn);
     };
   }, []);
 
