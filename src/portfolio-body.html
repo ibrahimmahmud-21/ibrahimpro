@@ -7,16 +7,18 @@
       <a href="#learning"><span class="shape"></span><span data-i18n="nav.learning">Learning</span></a>
       <a href="#contact"><span class="shape"></span><span data-i18n="nav.contact">Contact</span></a>
     </nav>
-    <button class="lang-toggle" id="langToggle" data-i18n-attr="aria-label:nav.toggleLang,title:nav.toggleLang" aria-label="Switch language" title="Switch language">
-      <span class="lang-opt" data-lang="en">EN</span>
-      <span class="lang-sep">|</span>
-      <span class="lang-opt" data-lang="bn">বাংলা</span>
-    </button>
-    <button class="theme-toggle" id="themeToggle" data-i18n-attr="aria-label:nav.toggleTheme,title:nav.toggleThemeTitle" aria-label="Toggle theme" title="Toggle light/dark theme">
-      <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-    <button class="menu-btn" id="menuBtn" data-i18n-attr="aria-label:nav.toggleMenu" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="header-controls" role="group" aria-label="Header controls">
+      <button type="button" class="hc-seg lang-toggle" id="langToggle" data-i18n-attr="aria-label:nav.toggleLang,title:nav.toggleLang" aria-label="Switch language" title="Switch language">
+        <span class="lang-opt" data-lang="en">EN</span>
+        <span class="lang-sep" aria-hidden="true">|</span>
+        <span class="lang-opt" data-lang="bn">বাং</span>
+      </button>
+      <button type="button" class="hc-seg theme-toggle" id="themeToggle" data-i18n-attr="aria-label:nav.toggleTheme,title:nav.toggleThemeTitle" aria-label="Toggle theme" title="Toggle light/dark theme">
+        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button type="button" class="hc-seg menu-btn" id="menuBtn" data-i18n-attr="aria-label:nav.toggleMenu" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </header>
 
@@ -180,9 +182,15 @@
             <label for="cf-website">Website</label>
             <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
           </div>
-          <div class="field captcha-field" id="captchaField" aria-hidden="true">
-            <label for="cf-captcha"><span data-i18n="form.captcha_label">Quick check:</span> <span id="captchaQuestion">—</span></label>
-            <input id="cf-captcha" name="captcha_answer" type="text" inputmode="numeric" autocomplete="off">
+          <div class="security-check captcha-field" id="captchaField" aria-hidden="true" role="group" aria-labelledby="secCheckTitle">
+            <div class="sc-header">
+              <span class="sc-icon" aria-hidden="true">🛡️</span>
+              <h3 class="sc-title" id="secCheckTitle" data-i18n="form.captcha_title">Security Check</h3>
+            </div>
+            <p class="sc-subtitle" data-i18n="form.captcha_subtitle">Please solve this simple question before sending your message.</p>
+            <div class="sc-question" id="captchaQuestion">—</div>
+            <label class="sc-answer-label" for="cf-captcha" data-i18n="form.captcha_answer_label">Your answer</label>
+            <input class="sc-input" id="cf-captcha" name="captcha_answer" type="text" inputmode="numeric" autocomplete="off">
             <div class="field-error" data-for="captcha"></div>
           </div>
           <button class="submit-btn" type="submit">
