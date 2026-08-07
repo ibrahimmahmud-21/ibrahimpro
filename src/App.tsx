@@ -1,26 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
-import { applyTranslations, detectInitialLang, LANG_KEY, localizeNumber, t, type Lang } from "./i18n";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
-const THEME_KEY = "theme-preference";
-
-// Apply theme early to avoid flash
-(() => {
-  if (typeof document === "undefined") return;
-  try {
-    const stored = localStorage.getItem(THEME_KEY);
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const theme = stored ?? (prefersDark ? "dark" : "light");
-    document.documentElement.setAttribute("data-theme", theme);
-  } catch {
-    document.documentElement.setAttribute("data-theme", "light");
-  }
-})();
 
 export default function App() {
-  const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     // Mobile nav toggle
     const menuBtn = document.getElementById("menuBtn");
@@ -30,24 +13,6 @@ export default function App() {
     const links = navMenu?.querySelectorAll("a") ?? [];
     const closeMenu = () => navMenu?.classList.remove("open");
     links.forEach((a) => a.addEventListener("click", closeMenu));
-
-    // Theme toggle
-    const themeBtn = document.getElementById("themeToggle");
-    const onTheme = () => {
-      const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-      const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      try { localStorage.setItem(THEME_KEY, next); } catch { /* ignore */ }
-    };
-    themeBtn?.addEventListener("click", onTheme);
-
-    // Respect system changes only if user hasn't chosen
-    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
-    const onSystem = (e: MediaQueryListEvent) => {
-      if (localStorage.getItem(THEME_KEY)) return;
-      document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
-    };
-    mq?.addEventListener?.("change", onSystem);
 
     // Reveal on scroll
     const io = new IntersectionObserver(
@@ -62,56 +27,9 @@ export default function App() {
       .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .stat-cell")
       .forEach((el) => io.observe(el));
 
-    // ---- i18n ----
-    let currentLang: Lang = detectInitialLang();
-    const rootEl = ref.current;
+    // Footer year
     const yearEl = document.getElementById("footerYear");
-    const footerRightsEl = document.getElementById("footerRights");
-    const langToggle = document.getElementById("langToggle");
-
-    const updateFooterYear = () => {
-      const year = new Date().getFullYear();
-      if (yearEl) yearEl.textContent = localizeNumber(currentLang, year);
-      if (footerRightsEl) {
-        footerRightsEl.textContent = t(currentLang, "footer.rights", {
-          year: localizeNumber(currentLang, year),
-        });
-      }
-    };
-    const updateLangToggle = () => {
-      langToggle?.querySelectorAll<HTMLElement>(".lang-opt").forEach((el) => {
-        el.classList.toggle("active", el.getAttribute("data-lang") === currentLang);
-      });
-    };
-    const applyLang = (lang: Lang, animate = false) => {
-      currentLang = lang;
-      const run = () => {
-        if (rootEl) applyTranslations(rootEl, lang);
-        updateFooterYear();
-        updateLangToggle();
-        // Re-render captcha in current language if visible
-        if (captchaField?.classList.contains("visible")) generateCaptcha();
-      };
-      if (animate && rootEl) {
-        rootEl.classList.add("lang-switching");
-        window.setTimeout(() => {
-          run();
-          window.setTimeout(() => rootEl.classList.remove("lang-switching"), 20);
-        }, 180);
-      } else {
-        run();
-      }
-    };
-    const onLangClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".lang-opt");
-      const picked = target?.getAttribute("data-lang") as Lang | null;
-      const next: Lang = picked ?? (currentLang === "en" ? "bn" : "en");
-      if (next === currentLang) return;
-      try { localStorage.setItem(LANG_KEY, next); } catch { /* ignore */ }
-      applyLang(next, true);
-    };
-    langToggle?.addEventListener("click", onLangClick);
-
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
     // Scroll progress + back to top
     const backBtn = document.getElementById("backToTop");
@@ -142,13 +60,7 @@ export default function App() {
       const b = Math.floor(Math.random() * 9) + 1;
       const op = Math.random() < 0.5 ? "+" : "×";
       captchaAnswer = op === "+" ? a + b : a * b;
-      if (captchaQuestionEl) {
-        captchaQuestionEl.textContent = t(currentLang, "form.captcha_question", {
-          a: localizeNumber(currentLang, a),
-          b: localizeNumber(currentLang, b),
-          op,
-        });
-      }
+      if (captchaQuestionEl) captchaQuestionEl.textContent = `${a} ${op} ${b} = ?`;
       if (captchaInput) captchaInput.value = "";
     };
     const revealCaptcha = () => {
@@ -164,7 +76,6 @@ export default function App() {
     const onFormFocusIn = (e: Event) => {
       const target = e.target as HTMLElement;
       if (target?.getAttribute("name") === "captcha_answer") return;
-      // If user tabs toward submit, ensure captcha shown
       if (target?.tagName === "BUTTON") revealCaptcha();
     };
     form?.addEventListener("focusin", onFormFocusIn);
@@ -192,28 +103,29 @@ export default function App() {
       const honeypot = String(data.get("website") || "").trim();
       const captchaVal = String(data.get("captcha_answer") || "").trim();
 
+      const successMsg = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+
       // Honeypot — silently drop bot submissions
       if (honeypot) {
         form.reset();
-        status.textContent = t(currentLang, "status.success");
+        status.textContent = successMsg;
         status.classList.add("success");
         return;
       }
 
       let ok = true;
-      if (name.length < 2) { setError("name", t(currentLang, "err.name")); ok = false; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", t(currentLang, "err.email")); ok = false; }
-      if (subject.length < 2) { setError("subject", t(currentLang, "err.subject")); ok = false; }
-      if (message.length < 10) { setError("message", t(currentLang, "err.message")); ok = false; }
+      if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", "Please enter a valid email address."); ok = false; }
+      if (subject.length < 2) { setError("subject", "Please enter a subject."); ok = false; }
+      if (message.length < 10) { setError("message", "Please write at least 10 characters."); ok = false; }
       if (!ok) return;
 
       revealCaptcha();
       if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
-        setError("captcha", t(currentLang, "err.captcha"));
+        setError("captcha", "Incorrect answer. Please try again.");
         generateCaptcha();
         return;
       }
-
 
       const btn = form.querySelector<HTMLButtonElement>(".submit-btn");
       btn?.classList.add("loading");
@@ -227,16 +139,16 @@ export default function App() {
         });
         if (res.ok) {
           form.reset();
-          status.textContent = t(currentLang, "status.success");
+          status.textContent = successMsg;
           status.classList.add("success");
         } else {
           const json = await res.json().catch(() => null);
-          const msg = json?.errors?.[0]?.message || t(currentLang, "status.fail");
+          const msg = json?.errors?.[0]?.message || "Something went wrong. Please try again.";
           status.textContent = msg;
           status.classList.add("error");
         }
       } catch {
-        status.textContent = t(currentLang, "status.network");
+        status.textContent = "Network error. Please check your connection and try again.";
         status.classList.add("error");
       } finally {
         btn?.classList.remove("loading");
@@ -245,22 +157,16 @@ export default function App() {
     };
     form?.addEventListener("submit", onSubmit);
 
-    // Initial i18n render
-    applyLang(currentLang, false);
-
     return () => {
       menuBtn?.removeEventListener("click", onMenu);
       links.forEach((a) => a.removeEventListener("click", closeMenu));
-      themeBtn?.removeEventListener("click", onTheme);
-      mq?.removeEventListener?.("change", onSystem);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
       messageEl?.removeEventListener("input", onMessageInput);
       form?.removeEventListener("focusin", onFormFocusIn);
-      langToggle?.removeEventListener("click", onLangClick);
     };
   }, []);
 
-  return <div ref={ref} dangerouslySetInnerHTML={{ __html: bodyHtml }} />;
+  return <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />;
 }
