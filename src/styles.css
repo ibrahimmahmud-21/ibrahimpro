@@ -301,8 +301,8 @@ footer{ padding:28px 0; border-top:2px solid var(--ink); }
   .learn-card{ padding:24px; }
   .skill-card{ padding:20px; }
   .contact-left, .contact-right{ padding:24px; }
-  .security-check.visible{ padding:18px; }
-  .security-check .sc-title{ font-size:16px; }
-  .security-check .sc-question{ font-size:24px; padding:10px 14px; min-width:140px; }
+  .security-check.visible{ padding:14px; }
+  .security-check .sc-row{ gap:10px; }
+  .security-check .sc-input{ min-width:90px; }
   .foot-row{ font-size:9.5px; }
 }
