@@ -62,13 +62,14 @@ nav a:hover{ opacity:.6; }
 .header-controls{ display:inline-flex; align-items:stretch; }
 .hc-seg{
   display:none; align-items:center; justify-content:center;
-  background:transparent; border:2px solid var(--ink); color:var(--ink); cursor:pointer;
-  padding:0 12px; height:34px; min-width:42px; font-family:inherit;
-  transition:background-color .18s ease, color .18s ease;
+  background:transparent; border:0; color:var(--ink); cursor:pointer;
+  padding:10px; margin:-10px -10px -10px 0; min-width:44px; min-height:44px; font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
 }
-.hc-seg:hover{ background:var(--ink); color:var(--paper); }
 .hc-seg:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
-.menu-btn span{ display:block; width:16px; height:2px; background:currentColor; margin:3.5px auto; }
+.menu-btn{ flex-direction:column; gap:5px; }
+.menu-btn span{ display:block; width:22px; height:2px; background:var(--ink); transition:opacity .18s ease; }
+.menu-btn:hover span{ opacity:.6; }
 
 /* sections */
 section{ padding:104px 0; position:relative; }
