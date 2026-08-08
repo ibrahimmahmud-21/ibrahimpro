@@ -53,26 +53,43 @@ export default function App() {
     const captchaQuestionEl = document.getElementById("captchaQuestion");
     const messageEl = form?.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
     const captchaInput = form?.querySelector<HTMLInputElement>('input[name="captcha_answer"]');
+    const submitBtn = form?.querySelector<HTMLButtonElement>(".submit-btn");
 
     let captchaAnswer = 0;
+    const isVerified = () =>
+      !!captchaInput && parseInt(captchaInput.value.trim(), 10) === captchaAnswer;
+    const syncVerified = () => {
+      const ok = isVerified();
+      captchaField?.classList.toggle("verified", ok);
+      captchaField?.querySelector<HTMLElement>(".sc-verified")?.setAttribute("aria-hidden", ok ? "false" : "true");
+      if (submitBtn && captchaField?.classList.contains("visible")) submitBtn.disabled = !ok;
+      if (ok) {
+        const err = form?.querySelector<HTMLElement>('.field-error[data-for="captcha"]');
+        if (err) err.textContent = "";
+      }
+    };
     const generateCaptcha = () => {
       const a = Math.floor(Math.random() * 9) + 1;
       const b = Math.floor(Math.random() * 9) + 1;
       const op = Math.random() < 0.5 ? "+" : "×";
       captchaAnswer = op === "+" ? a + b : a * b;
-      if (captchaQuestionEl) captchaQuestionEl.textContent = `${a} ${op} ${b} = ?`;
+      if (captchaQuestionEl) captchaQuestionEl.textContent = `${a} ${op} ${b} =`;
       if (captchaInput) captchaInput.value = "";
+      syncVerified();
     };
     const revealCaptcha = () => {
       if (!captchaField || captchaField.classList.contains("visible")) return;
       generateCaptcha();
       captchaField.classList.add("visible");
       captchaField.setAttribute("aria-hidden", "false");
+      syncVerified();
     };
     const onMessageInput = () => {
       if ((messageEl?.value.trim().length ?? 0) >= 10) revealCaptcha();
     };
     messageEl?.addEventListener("input", onMessageInput);
+    const onCaptchaInput = () => syncVerified();
+    captchaInput?.addEventListener("input", onCaptchaInput);
     const onFormFocusIn = (e: Event) => {
       const target = e.target as HTMLElement;
       if (target?.getAttribute("name") === "captcha_answer") return;
@@ -139,6 +156,8 @@ export default function App() {
         });
         if (res.ok) {
           form.reset();
+          captchaField?.classList.remove("visible", "verified");
+          captchaField?.setAttribute("aria-hidden", "true");
           status.textContent = successMsg;
           status.classList.add("success");
         } else {
@@ -153,6 +172,7 @@ export default function App() {
       } finally {
         btn?.classList.remove("loading");
         if (btn) btn.disabled = false;
+        syncVerified();
       }
     };
     form?.addEventListener("submit", onSubmit);
@@ -164,6 +184,7 @@ export default function App() {
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
       messageEl?.removeEventListener("input", onMessageInput);
+      captchaInput?.removeEventListener("input", onCaptchaInput);
       form?.removeEventListener("focusin", onFormFocusIn);
     };
   }, []);
