@@ -156,6 +156,8 @@ export default function App() {
         });
         if (res.ok) {
           form.reset();
+          captchaField?.classList.remove("visible", "verified");
+          captchaField?.setAttribute("aria-hidden", "true");
           status.textContent = successMsg;
           status.classList.add("success");
         } else {
@@ -170,6 +172,7 @@ export default function App() {
       } finally {
         btn?.classList.remove("loading");
         if (btn) btn.disabled = false;
+        syncVerified();
       }
     };
     form?.addEventListener("submit", onSubmit);
@@ -181,6 +184,7 @@ export default function App() {
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
       messageEl?.removeEventListener("input", onMessageInput);
+      captchaInput?.removeEventListener("input", onCaptchaInput);
       form?.removeEventListener("focusin", onFormFocusIn);
     };
   }, []);
