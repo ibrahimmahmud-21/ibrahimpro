@@ -1,7 +1,16 @@
 import { useEffect } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
+import { supabase } from "./integrations/supabase/client";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+      reset: (id?: string) => void;
+    };
+  }
+}
+
 
 export default function App() {
   useEffect(() => {
@@ -46,64 +55,80 @@ export default function App() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
-    // Contact form → Formspree
+    // Contact form → Turnstile verification + Formspree (server-side)
     const form = document.getElementById("contactForm") as HTMLFormElement | null;
     const status = document.getElementById("formStatus");
     const captchaField = document.getElementById("captchaField");
-    const captchaQuestionEl = document.getElementById("captchaQuestion");
-    const messageEl = form?.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
-    const captchaInput = form?.querySelector<HTMLInputElement>('input[name="captcha_answer"]');
+    const widgetEl = document.getElementById("turnstileWidget");
     const submitBtn = form?.querySelector<HTMLButtonElement>(".submit-btn");
 
-    let captchaAnswer = 0;
-    const isVerified = () =>
-      !!captchaInput && parseInt(captchaInput.value.trim(), 10) === captchaAnswer;
-    const syncVerified = () => {
-      const ok = isVerified();
-      captchaField?.classList.toggle("verified", ok);
-      captchaField?.querySelector<HTMLElement>(".sc-verified")?.setAttribute("aria-hidden", ok ? "false" : "true");
-      if (submitBtn && captchaField?.classList.contains("visible")) submitBtn.disabled = !ok;
-      if (ok) {
-        const err = form?.querySelector<HTMLElement>('.field-error[data-for="captcha"]');
-        if (err) err.textContent = "";
-      }
-    };
-    const generateCaptcha = () => {
-      const a = Math.floor(Math.random() * 9) + 1;
-      const b = Math.floor(Math.random() * 9) + 1;
-      const op = Math.random() < 0.5 ? "+" : "×";
-      captchaAnswer = op === "+" ? a + b : a * b;
-      if (captchaQuestionEl) captchaQuestionEl.textContent = `${a} ${op} ${b} =`;
-      if (captchaInput) captchaInput.value = "";
-      syncVerified();
-    };
-    const revealCaptcha = () => {
-      if (!captchaField || captchaField.classList.contains("visible")) return;
-      generateCaptcha();
-      captchaField.classList.add("visible");
-      captchaField.setAttribute("aria-hidden", "false");
-      syncVerified();
-    };
-    const onMessageInput = () => {
-      if ((messageEl?.value.trim().length ?? 0) >= 10) revealCaptcha();
-    };
-    messageEl?.addEventListener("input", onMessageInput);
-    const onCaptchaInput = () => syncVerified();
-    captchaInput?.addEventListener("input", onCaptchaInput);
-    const onFormFocusIn = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target?.getAttribute("name") === "captcha_answer") return;
-      if (target?.tagName === "BUTTON") revealCaptcha();
-    };
-    form?.addEventListener("focusin", onFormFocusIn);
+    let turnstileToken = "";
+    let widgetId: string | undefined;
+    let cancelled = false;
 
-    const clearErrors = () => {
-      form?.querySelectorAll<HTMLElement>(".field-error").forEach((el) => (el.textContent = ""));
-    };
     const setError = (name: string, msg: string) => {
       const el = form?.querySelector<HTMLElement>(`.field-error[data-for="${name}"]`);
       if (el) el.textContent = msg;
     };
+    const clearErrors = () => {
+      form?.querySelectorAll<HTMLElement>(".field-error").forEach((el) => (el.textContent = ""));
+    };
+    const syncSubmit = () => {
+      if (submitBtn) submitBtn.disabled = !turnstileToken;
+    };
+    if (submitBtn) submitBtn.disabled = true;
+
+    const loadScript = () =>
+      new Promise<void>((resolve, reject) => {
+        if (window.turnstile) return resolve();
+        const existing = document.querySelector<HTMLScriptElement>("script[data-turnstile]");
+        if (existing) {
+          existing.addEventListener("load", () => resolve());
+          existing.addEventListener("error", () => reject(new Error("load")));
+          return;
+        }
+        const s = document.createElement("script");
+        s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        s.async = true;
+        s.defer = true;
+        s.dataset.turnstile = "true";
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error("load"));
+        document.head.appendChild(s);
+      });
+
+    const initTurnstile = async () => {
+      if (!widgetEl) return;
+      try {
+        const { data, error } = await supabase.functions.invoke("contact", { method: "GET" });
+        const siteKey = (data as { siteKey?: string } | null)?.siteKey;
+        if (error || !siteKey) throw new Error("config");
+        await loadScript();
+        if (cancelled || !window.turnstile) return;
+        widgetId = window.turnstile.render(widgetEl, {
+          sitekey: siteKey,
+          theme: "light",
+          callback: (token: string) => {
+            turnstileToken = token;
+            setError("captcha", "");
+            syncSubmit();
+          },
+          "expired-callback": () => {
+            turnstileToken = "";
+            syncSubmit();
+          },
+          "error-callback": () => {
+            turnstileToken = "";
+            syncSubmit();
+            setError("captcha", "Verification could not load. Please retry.");
+          },
+        });
+      } catch {
+        if (submitBtn) submitBtn.disabled = false;
+        setError("captcha", "Verification could not load. Please refresh and try again.");
+      }
+    };
+    void initTurnstile();
 
     const onSubmit = async (e: Event) => {
       e.preventDefault();
@@ -117,18 +142,9 @@ export default function App() {
       const email = String(data.get("email") || "").trim();
       const subject = String(data.get("subject") || "").trim();
       const message = String(data.get("message") || "").trim();
-      const honeypot = String(data.get("website") || "").trim();
-      const captchaVal = String(data.get("captcha_answer") || "").trim();
+      const website = String(data.get("website") || "").trim();
 
       const successMsg = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
-
-      // Honeypot — silently drop bot submissions
-      if (honeypot) {
-        form.reset();
-        status.textContent = successMsg;
-        status.classList.add("success");
-        return;
-      }
 
       let ok = true;
       if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
@@ -137,56 +153,55 @@ export default function App() {
       if (message.length < 10) { setError("message", "Please write at least 10 characters."); ok = false; }
       if (!ok) return;
 
-      revealCaptcha();
-      if (!captchaVal || parseInt(captchaVal, 10) !== captchaAnswer) {
-        setError("captcha", "Incorrect answer. Please try again.");
-        generateCaptcha();
+      if (!turnstileToken) {
+        setError("captcha", "Please complete the security verification.");
         return;
       }
 
-      const btn = form.querySelector<HTMLButtonElement>(".submit-btn");
-      btn?.classList.add("loading");
-      if (btn) btn.disabled = true;
+      submitBtn?.classList.add("loading");
+      if (submitBtn) submitBtn.disabled = true;
 
       try {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: new FormData(form),
+        const { data: res, error } = await supabase.functions.invoke("contact", {
+          body: { name, email, subject, message, website, turnstileToken },
         });
-        if (res.ok) {
+        const payload = res as { ok?: boolean; error?: string } | null;
+        if (!error && payload?.ok) {
           form.reset();
-          captchaField?.classList.remove("visible", "verified");
-          captchaField?.setAttribute("aria-hidden", "true");
           status.textContent = successMsg;
           status.classList.add("success");
         } else {
-          const json = await res.json().catch(() => null);
-          const msg = json?.errors?.[0]?.message || "Something went wrong. Please try again.";
-          status.textContent = msg;
+          let msg = payload?.error;
+          const ctx = (error as { context?: Response } | null)?.context;
+          if (!msg && ctx && typeof ctx.json === "function") {
+            const body = await ctx.json().catch(() => null);
+            msg = body?.error;
+          }
+          status.textContent = msg || "Something went wrong. Please try again.";
           status.classList.add("error");
         }
+
       } catch {
         status.textContent = "Network error. Please check your connection and try again.";
         status.classList.add("error");
       } finally {
-        btn?.classList.remove("loading");
-        if (btn) btn.disabled = false;
-        syncVerified();
+        submitBtn?.classList.remove("loading");
+        turnstileToken = "";
+        if (window.turnstile) window.turnstile.reset(widgetId);
+        syncSubmit();
       }
     };
     form?.addEventListener("submit", onSubmit);
 
     return () => {
+      cancelled = true;
       menuBtn?.removeEventListener("click", onMenu);
       links.forEach((a) => a.removeEventListener("click", closeMenu));
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       form?.removeEventListener("submit", onSubmit);
-      messageEl?.removeEventListener("input", onMessageInput);
-      captchaInput?.removeEventListener("input", onCaptchaInput);
-      form?.removeEventListener("focusin", onFormFocusIn);
     };
+
   }, []);
 
   return <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />;

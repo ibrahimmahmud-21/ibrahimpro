@@ -178,19 +178,15 @@
             <label for="cf-website">Website</label>
             <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
           </div>
-          <div class="security-check captcha-field" id="captchaField" aria-hidden="true" role="group" aria-labelledby="secCheckTitle">
+          <div class="security-check" id="captchaField" role="group" aria-labelledby="secCheckTitle">
             <div class="sc-header">
               <svg class="sc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/></svg>
               <h3 class="sc-title" id="secCheckTitle">Security Verification</h3>
             </div>
-            <p class="sc-subtitle">Verify that you're human before sending.</p>
-            <div class="sc-row">
-              <span class="sc-question" id="captchaQuestion">—</span>
-              <input class="sc-input" id="cf-captcha" name="captcha_answer" type="text" inputmode="numeric" autocomplete="off" placeholder="Your answer" aria-label="Your answer">
-              <span class="sc-verified" id="captchaVerified" aria-hidden="true">✓ Verified</span>
-            </div>
+            <div class="sc-widget" id="turnstileWidget"></div>
             <div class="field-error" data-for="captcha"></div>
           </div>
+
           <button class="submit-btn" type="submit">
             <span class="btn-label">Send Message</span>
             <span class="btn-spinner" aria-hidden="true"></span>
