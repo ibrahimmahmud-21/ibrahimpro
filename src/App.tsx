@@ -1,7 +1,16 @@
 import { useEffect } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
+import { supabase } from "@/integrations/supabase/client";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzezggv";
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+      reset: (id?: string) => void;
+    };
+  }
+}
+
 
 export default function App() {
   useEffect(() => {
