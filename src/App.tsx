@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import bodyHtml from "./portfolio-body.html?raw";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "./integrations/supabase/client";
 
 declare global {
   interface Window {
