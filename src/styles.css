@@ -271,8 +271,13 @@ footer{ padding:28px 0; border-top:2px solid var(--ink); }
   .learn-card{ padding:24px; }
   .skill-card{ padding:20px; }
   .contact-left, .contact-right{ padding:24px; }
-  .security-check.visible{ padding:14px; }
-  .security-check .sc-row{ gap:10px; }
-  .security-check .sc-input{ min-width:90px; }
+  .field{ margin-bottom:14px; }
+  .field label{ margin-bottom:4px; }
+  .field input, .field textarea{ font-size:14.5px; padding:6px 2px; }
+  .field textarea{ min-height:72px; }
+  .field-error{ margin-top:3px; font-size:11.5px; min-height:0; }
+  .security-check{ padding:12px 13px; margin:0 0 14px; }
+  .security-check .sc-widget{ margin-top:8px; }
   .foot-row{ font-size:9.5px; }
+
 }
