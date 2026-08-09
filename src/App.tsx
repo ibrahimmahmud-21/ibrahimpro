@@ -171,9 +171,16 @@ export default function App() {
           status.textContent = successMsg;
           status.classList.add("success");
         } else {
-          status.textContent = payload?.error || "Something went wrong. Please try again.";
+          let msg = payload?.error;
+          const ctx = (error as { context?: Response } | null)?.context;
+          if (!msg && ctx && typeof ctx.json === "function") {
+            const body = await ctx.json().catch(() => null);
+            msg = body?.error;
+          }
+          status.textContent = msg || "Something went wrong. Please try again.";
           status.classList.add("error");
         }
+
       } catch {
         status.textContent = "Network error. Please check your connection and try again.";
         status.classList.add("error");
