@@ -298,3 +298,9 @@ footer{ padding:clamp(22px,4vw,28px) 0; border-top:2px solid var(--ink); }
   .security-check .sc-title{ font-size:10px; letter-spacing:.1em; }
 }
 
+
+/* keep the Turnstile widget (fixed ~300px) inside narrow phone layouts */
+@media(max-width:400px){
+  .security-check .sc-widget{ overflow:hidden; min-height:60px; }
+  .security-check .sc-widget > *{ transform:scale(.86); transform-origin:left top; }
+}
