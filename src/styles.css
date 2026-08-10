@@ -30,10 +30,15 @@ body{
   overflow-x:hidden;
 }
 ::selection{ background:var(--ink); color:var(--paper); }
-h1,h2,h3{ font-family:'Poppins', sans-serif; }
+h1,h2,h3{ font-family:'Poppins', sans-serif; overflow-wrap:break-word; }
 .mono{ font-family:'IBM Plex Mono', monospace; }
 
-.wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+img, svg{ max-width:100%; }
+/* overflow guards: grid/flex children may shrink below content width */
+.hero-grid > *, .about-grid > *, .skill-card, .learn-card,
+.project-card, .project-body, .contact-left, .contact-right, .field{ min-width:0; }
+
+.wrap{ width:100%; max-width:1120px; margin:0 auto; padding:0 clamp(18px,5vw,32px); }
 
 /* header */
 header{
