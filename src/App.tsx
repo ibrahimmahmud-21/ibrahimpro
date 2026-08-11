@@ -33,7 +33,7 @@ export default function App() {
       { threshold: 0.15 },
     );
     document
-      .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .stat-cell")
+      .querySelectorAll(".reveal, .skill-card, .project-card, .learn-card, .build-card, .stat-cell")
       .forEach((el) => io.observe(el));
 
     // Footer year
