@@ -154,6 +154,21 @@ section h2{ font-size:clamp(26px,5.2vw,42px); font-weight:700; line-height:1.15;
 .learn-card h3{ font-size:clamp(18.5px,4.8vw,21px); font-weight:700; margin-top:8px; letter-spacing:-.01em; }
 .learn-card p{ margin-top:10px; color:var(--muted-2); font-size:clamp(14px,3.7vw,14.5px); }
 
+/* what I can build */
+.build-intro{ color:var(--muted-2); font-size:clamp(14px,3.7vw,15.5px); max-width:60ch; margin:-14px 0 clamp(22px,4vw,30px); }
+.build-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); gap:clamp(14px,2.6vw,20px); }
+.build-card{ border:2px solid var(--ink); padding:clamp(18px,4.4vw,26px); background:var(--paper); position:relative; min-width:0; opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease; }
+.build-card.in-view{ opacity:1; transform:translateY(0); }
+.build-shape{ position:absolute; top:-7px; right:20px; }
+.build-circle{ width:14px; height:14px; border-radius:50%; background:var(--blue); }
+.build-tri{ width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:14px solid var(--yellow); }
+.build-square{ width:13px; height:13px; background:var(--red); }
+.build-card h3{ font-size:clamp(17px,4.4vw,19.5px); font-weight:700; letter-spacing:-.01em; }
+.build-card p{ margin-top:8px; color:var(--muted-2); font-size:clamp(13.5px,3.6vw,14.5px); }
+.build-cta{ display:inline-flex; align-items:center; min-height:44px; margin-top:clamp(18px,3.4vw,26px); font-family:'IBM Plex Mono',monospace; font-size:clamp(12px,3.2vw,13px); letter-spacing:.04em; color:var(--ink); text-decoration:none; border-bottom:2px solid var(--ink); transition:.18s ease; }
+.build-cta:hover{ color:var(--blue); border-color:var(--blue); }
+
+
 /* contact */
 .contact-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border:2px solid var(--ink); }
 .contact-left{ padding:clamp(24px,4.6vw,40px); border-right:2px solid var(--ink); background:var(--blue); color:#fff; }
