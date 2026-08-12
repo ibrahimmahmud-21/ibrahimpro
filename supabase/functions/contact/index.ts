@@ -80,5 +80,32 @@ Deno.serve(async (req) => {
     return json({ error: msg }, 502);
   }
 
+  // Submission succeeded — trigger the EmailJS auto-reply (server-side only).
+  const serviceId = Deno.env.get('EMAILJS_SERVICE_ID');
+  const templateId = Deno.env.get('EMAILJS_TEMPLATE_ID');
+  const publicKey = Deno.env.get('EMAILJS_PUBLIC_KEY');
+  const privateKey = Deno.env.get('EMAILJS_PRIVATE_KEY');
+
+  if (serviceId && templateId && publicKey && privateKey) {
+    try {
+      const ejRes = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          accessToken: privateKey,
+          template_params: { name, email, subject, message },
+        }),
+      });
+      if (!ejRes.ok) {
+        console.error('EmailJS auto-reply failed:', ejRes.status, await ejRes.text().catch(() => ''));
+      }
+    } catch (err) {
+      console.error('EmailJS auto-reply error:', err);
+    }
+  }
+
   return json({ ok: true });
 });
