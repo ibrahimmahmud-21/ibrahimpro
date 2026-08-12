@@ -144,7 +144,7 @@ export default function App() {
       const message = String(data.get("message") || "").trim();
       const website = String(data.get("website") || "").trim();
 
-      const successMsg = "Message sent successfully. Thank you for reaching out! I'll get back to you soon.";
+      const successMsg = "Message sent successfully. I’ll get back to you soon.";
 
       let ok = true;
       if (name.length < 2) { setError("name", "Please enter your name."); ok = false; }
