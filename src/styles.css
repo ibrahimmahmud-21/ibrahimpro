@@ -294,7 +294,7 @@ footer{ padding:clamp(22px,4vw,28px) 0; border-top:2px solid var(--ink); }
 /* phones */
 @media(max-width:480px){
   section h2{ margin-bottom:26px; }
-  .hero-actions .btn{ width:auto; padding:12px clamp(38px,10vw,50px); }
+  .hero-actions .btn{ width:auto; padding:12px clamp(42px,10.5vw,52px); }
   .email-card{ gap:9px; }
   .field-error{ margin-top:3px; font-size:11.5px; min-height:0; }
   .security-check{ padding:12px 13px; margin:0 0 14px; }
