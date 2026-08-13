@@ -13,10 +13,40 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
+  const url = new URL(req.url);
+
   // Public config: the Turnstile SITE key is publishable by design.
   if (req.method === 'GET') {
+    // Non-sensitive diagnostic: probes whether EmailJS accepts server-side (non-browser) API calls.
+    // Uses an intentionally invalid template id so NO email is ever sent.
+    if (url.searchParams.get('check') === 'emailjs') {
+      const serviceId = Deno.env.get('EMAILJS_SERVICE_ID');
+      const publicKey = Deno.env.get('EMAILJS_PUBLIC_KEY');
+      const privateKey = Deno.env.get('EMAILJS_PRIVATE_KEY');
+      const configured = {
+        service_id: Boolean(serviceId),
+        template_id: Boolean(Deno.env.get('EMAILJS_TEMPLATE_ID')),
+        public_key: Boolean(publicKey),
+        private_key: Boolean(privateKey),
+      };
+      if (!serviceId || !publicKey || !privateKey) return json({ configured, probe: null });
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: '__diagnostic_invalid__',
+          user_id: publicKey,
+          accessToken: privateKey,
+          template_params: {},
+        }),
+      });
+      const text = await res.text().catch(() => '');
+      return json({ configured, probe: { status: res.status, body: text.slice(0, 300) } });
+    }
     return json({ siteKey: Deno.env.get('TURNSTILE_SITE_KEY') ?? null });
   }
+
 
   if (req.method !== 'POST') {
     return json({ error: 'Method not allowed' }, 405);
