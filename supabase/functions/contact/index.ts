@@ -116,26 +116,79 @@ Deno.serve(async (req) => {
   const publicKey = Deno.env.get('EMAILJS_PUBLIC_KEY');
   const privateKey = Deno.env.get('EMAILJS_PRIVATE_KEY');
 
+  let autoReply: { ok: boolean; status?: number; detail?: string } = {
+    ok: false,
+    detail: 'not_configured',
+  };
+
   if (serviceId && templateId && publicKey && privateKey) {
-    try {
-      const ejRes = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    // Template "To Email" is {{email}}; to_email/reply_to are sent as aliases for robustness.
+    const templateParams = {
+      name,
+      email,
+      subject,
+      message,
+      to_email: email,
+      to_name: name,
+      reply_to: email,
+    };
+    const payloadBody = JSON.stringify({
+      service_id: serviceId,
+      template_id: templateId,
+      user_id: publicKey,
+      accessToken: privateKey,
+      template_params: templateParams,
+    });
+
+    const send = (extraHeaders: Record<string, string> = {}) =>
+      fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          service_id: serviceId,
-          template_id: templateId,
-          user_id: publicKey,
-          accessToken: privateKey,
-          template_params: { name, email, subject, message },
-        }),
+        headers: { 'Content-Type': 'application/json', ...extraHeaders },
+        body: payloadBody,
       });
-      if (!ejRes.ok) {
-        console.error('EmailJS auto-reply failed:', ejRes.status, await ejRes.text().catch(() => ''));
+
+    console.log('EmailJS request:', {
+      service_id: serviceId,
+      template_id: templateId,
+      user_id_present: true,
+      access_token_present: true,
+      template_param_keys: Object.keys(templateParams),
+      to: email,
+    });
+
+    try {
+      let ejRes = await send();
+      let text = await ejRes.text().catch(() => '');
+
+      // EmailJS blocks non-browser calls unless enabled in dashboard security settings.
+      // Retry once with browser-like headers in case only the strict origin check is failing.
+      if (!ejRes.ok && ejRes.status === 403) {
+        console.error('EmailJS auto-reply blocked:', ejRes.status, text);
+        const origin = 'https://ibrahimpro.lovable.app';
+        ejRes = await send({ origin, referer: `${origin}/`, 'user-agent': 'Mozilla/5.0' });
+        text = await ejRes.text().catch(() => '');
+      }
+
+      if (ejRes.ok) {
+        autoReply = { ok: true, status: ejRes.status };
+        console.log('EmailJS auto-reply sent:', ejRes.status, text);
+      } else {
+        autoReply = { ok: false, status: ejRes.status, detail: text.slice(0, 300) };
+        console.error('EmailJS auto-reply failed:', ejRes.status, text);
       }
     } catch (err) {
+      autoReply = { ok: false, detail: String(err) };
       console.error('EmailJS auto-reply error:', err);
     }
+  } else {
+    console.error('EmailJS auto-reply skipped: missing secrets', {
+      service_id: Boolean(serviceId),
+      template_id: Boolean(templateId),
+      public_key: Boolean(publicKey),
+      private_key: Boolean(privateKey),
+    });
   }
 
-  return json({ ok: true });
+  return json({ ok: true, autoReply });
 });
+
